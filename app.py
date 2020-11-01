@@ -19,23 +19,17 @@ def homepage():
 @app.route('/froyo')
 def choose_froyo():
     """Shows a form to collect the user's Fro-Yo order."""
-    return """
-    <form action="/froyo_results" method="GET">
-        What is your favorite Fro-Yo flavor? <br/>
-        <input type="text" name="flavor"><br/>
-        What are your favorite toppings? <br/>
-        <input type="text" name="toppings"><br/>
-        <input type="submit" value="Submit!">
-    </form>
-    """
+    return render_template("froyo_form.html")
 
 
 @app.route('/froyo_results')
 def show_froyo_results():
     """Shows the user what they ordered from the previous page."""
-    users_froyo_flavor = request.args.get('flavor')
-    toppings = request.args.get("toppings")
-    return f'You ordered {users_froyo_flavor} flavored Fro-Yo with {toppings} on top!'
+    context = {
+        "flavor": request.args.get('flavor'),
+        "toppings": request.args.get("toppings")
+    }
+    return render_template("froyo_results.html", **context)
 
 
 @app.route('/favorites')
@@ -86,20 +80,7 @@ def message_results():
 @app.route('/calculator')
 def calculator():
     """Shows the user a form to enter 2 numbers and an operation."""
-    return """
-    <form action="/calculator_results" method="GET">
-        Please enter 2 numbers and select an operator.<br/><br/>
-        <input type="number" name="operand1">
-        <select name="operation">
-            <option value="add">+</option>
-            <option value="subtract">-</option>
-            <option value="multiply">*</option>
-            <option value="divide">/</option>
-        </select>
-        <input type="number" name="operand2">
-        <input type="submit" value="Submit!">
-    </form>
-    """
+    return render_template("calculator_form.html")
 
 
 @app.route('/calculator_results')
@@ -108,14 +89,24 @@ def calculator_results():
     op = request.args.get("operation")
     num1 = request.args.get("operand1")
     num2 = request.args.get("operand2")
+
     if op == "add":
-        return f"You chose to {op} {num1} and {num2}.  Your result is: {int(num1) + int(num2)}"
+        result = int(num1) + int(num2)
     elif op == "subtract":
-        return f"You chose to {op} {num1} and {num2}.  Your result is: {int(num1) - int(num2)}"
+        result = int(num1) - int(num2)
     elif op == "multiply":
-        return f"You chose to {op} {num1} and {num2}.  Your result is: {int(num1) * int(num2)}"
+        result = int(num1) * int(num2)
     elif op == "divide":
-        return f"You chose to {op} {num1} and {num2}.  Your result is: {int(num1) / int(num2)}"
+        result = int(num1) / int(num2)
+
+    context = {
+        "op": op,
+        "num1": num1,
+        "num2": num2,
+        "result": result
+    }
+
+    return render_template("calculator_results.html", **context)
 
 
 # List of compliments to be used in the `compliments_results` route (feel free
