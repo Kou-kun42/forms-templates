@@ -23,6 +23,8 @@ def choose_froyo():
     <form action="/froyo_results" method="GET">
         What is your favorite Fro-Yo flavor? <br/>
         <input type="text" name="flavor"><br/>
+        What are your favorite toppings? <br/>
+        <input type="text" name="toppings"><br/>
         <input type="submit" value="Submit!">
     </form>
     """
@@ -31,32 +33,54 @@ def choose_froyo():
 @app.route('/froyo_results')
 def show_froyo_results():
     """Shows the user what they ordered from the previous page."""
-    pass
+    users_froyo_flavor = request.args.get('flavor')
+    toppings = request.args.get("toppings")
+    return f'You ordered {users_froyo_flavor} flavored Fro-Yo with {toppings} on top!'
 
 
 @app.route('/favorites')
 def favorites():
     """Shows the user a form to choose their favorite color, animal and city"""
-    pass
+    return """
+    <form action="/favorites_results" method="GET">
+        What is your favorite color? <br/>
+        <input type="text" name="color"><br/>
+        What is your favorite animal? <br/>
+        <input type="text" name="animal"><br/>
+        What is your favorite city? <br/>
+        <input type="text" name="city"><br/>
+        <input type="submit" value="Submit!">
+    </form>
+    """
 
 
 @app.route('/favorites_results')
 def favorites_results():
     """Shows the user a nice message using their form results."""
-    pass
+    color = request.args.get("color")
+    animal = request.args.get("animal")
+    city = request.args.get("city")
+    return f"Wow, I didn't know {color} {animal}s lived in {city}!"
 
 
 @app.route('/secret_message')
 def secret_message():
     """Shows the user a form to collect a secret message. Sends the result via
     the POST method to keep it a secret!"""
-    pass
+    return """
+    <form action="/message_results" method="POST">
+        What is your secret message? <br/>
+        <input type="text" name="message"><br/>
+        <input type="submit" value="Submit!">
+    </form>
+    """
 
 
 @app.route('/message_results', methods=['POST'])
 def message_results():
     """Shows the user their message, with the letters in sorted order."""
-    pass
+    message = request.form.get("message")
+    return f"{sort_letters(message)}"
 
 
 @app.route('/calculator')
@@ -81,7 +105,17 @@ def calculator():
 @app.route('/calculator_results')
 def calculator_results():
     """Shows the user the result of their calculation."""
-    pass
+    op = request.args.get("operation")
+    num1 = request.args.get("operand1")
+    num2 = request.args.get("operand2")
+    if op == "add":
+        return f"You chose to {op} {num1} and {num2}.  Your result is: {int(num1) + int(num2)}"
+    elif op == "subtract":
+        return f"You chose to {op} {num1} and {num2}.  Your result is: {int(num1) - int(num2)}"
+    elif op == "multiply":
+        return f"You chose to {op} {num1} and {num2}.  Your result is: {int(num1) * int(num2)}"
+    elif op == "divide":
+        return f"You chose to {op} {num1} and {num2}.  Your result is: {int(num1) / int(num2)}"
 
 
 # List of compliments to be used in the `compliments_results` route (feel free
